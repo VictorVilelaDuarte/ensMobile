@@ -1,5 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/Feather';
 
 import Home from '../pages/Home';
 import SignIn from '../pages/SignIn';
@@ -21,6 +22,11 @@ const MainNavigationRoutes: React.FC = () => (
       activeTintColor: '#0677d0',
       activeBackgroundColor: '#0677d0',
       style: { width: '100%', marginLeft: 0 },
+    }}
+    screenOptions={{
+      headerShown: true,
+      headerTintColor: '#326b97',
+      headerTitleAlign: 'left',
     }}
   >
     <MainNavigation.Screen
