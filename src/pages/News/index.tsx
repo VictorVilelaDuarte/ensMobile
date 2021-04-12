@@ -18,26 +18,49 @@ export interface NewsType {
 }
 
 const News: React.FC = () => {
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [news, setNews] = useState<NewsType[]>([]);
 
   useEffect(() => {
     api
-      .get('/noticia?page=0')
+      .get(`/noticia?page=${page}`)
       .then(res => {
-        setNews(res.data.data);
+        res.data.data.map((item: NewsType) => {
+          const newObj = {
+            noticia_cod: item.noticia_cod,
+            noticia_imagem: item.noticia_imagem,
+            noticia_titulo: item.noticia_titulo,
+          };
+
+          if (news.find(el => el.noticia_cod === newObj.noticia_cod)) {
+            return setHasMore(false);
+          }
+
+          return setNews(oldNews => [...oldNews, newObj]);
+        });
       })
       .catch(err => {
         console.log(err);
       });
-  }, []);
+  }, [page]);
+
+  function loadNews() {
+    if (hasMore) {
+      setPage(page + 1);
+    }
+  }
 
   return (
     <Container>
       <List
+        onEndReached={loadNews}
+        onEndReachedThreshold={0.1}
         ItemSeparatorComponent={() => <SeparatorItem />}
         data={news}
+        keyExtractor={item => item.noticia_cod}
         renderItem={({ item }) => (
-          <NewsContainer>
+          <NewsContainer onPress={() => console.log(item.noticia_cod)}>
             <NewsImageDiv>
               <NewsImage source={{ uri: item.noticia_imagem }} />
             </NewsImageDiv>
